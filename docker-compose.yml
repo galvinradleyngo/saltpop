@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  saltpop:
+    image: ghcr.io/with-labs/popspace:latest
+    restart: unless-stopped
+    ports:
+      - "8888:8888"   # UI
+      - "8889:8889"   # API
+      - "8890:8890"   # Socket (hermes)
+      - "8891:8891"   # Collaborative docs (unicorn)
+    env_file:
+      - .env
+    volumes:
+      - popspace-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  popspace-data:
+    driver: local

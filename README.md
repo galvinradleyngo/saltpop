@@ -105,8 +105,11 @@ Admin privileges let you create and edit room templates.
 All user data (rooms, files, settings) is stored in a named Docker volume (`popspace-data`). To back it up:
 
 ```bash
+# Docker Compose prefixes volumes with the project (directory) name.
+# If your directory is 'saltpop', the volume will be 'saltpop_popspace-data'.
+VOLUME=$(docker volume ls -q -f name=popspace-data | head -1)
 docker run --rm \
-  -v saltpop_popspace-data:/data \
+  -v "$VOLUME":/data \
   -v "$(pwd)/backup":/backup \
   alpine tar czf /backup/saltpop-backup-$(date +%Y%m%d).tar.gz /data
 ```
